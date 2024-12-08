@@ -12,8 +12,8 @@ using proj.Data;
 namespace proj.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241204101204_ok")]
-    partial class ok
+    [Migration("20241208184750_NewMigration")]
+    partial class NewMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -180,11 +180,11 @@ namespace proj.Data.Migrations
 
             modelBuilder.Entity("proj.Models.CommentModel", b =>
                 {
-                    b.Property<int>("CommentId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CommentId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -192,6 +192,9 @@ namespace proj.Data.Migrations
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("Rating")
+                        .HasColumnType("int");
 
                     b.Property<int>("RecipeId")
                         .HasColumnType("int");
@@ -203,7 +206,7 @@ namespace proj.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("CommentId");
+                    b.HasKey("Id");
 
                     b.HasIndex("RecipeId");
 
@@ -237,6 +240,31 @@ namespace proj.Data.Migrations
                     b.ToTable("Contests");
                 });
 
+            modelBuilder.Entity("proj.Models.RatingModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StarNumber")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecipeId");
+
+                    b.ToTable("Ratings");
+                });
+
             modelBuilder.Entity("proj.Models.RecipeModel", b =>
                 {
                     b.Property<int>("Id")
@@ -245,6 +273,9 @@ namespace proj.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<double>("AverageRating")
+                        .HasColumnType("float");
+
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
@@ -252,7 +283,7 @@ namespace proj.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ContestId")
+                    b.Property<int?>("ContestId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
@@ -427,6 +458,17 @@ namespace proj.Data.Migrations
                     b.Navigation("Recipe");
                 });
 
+            modelBuilder.Entity("proj.Models.RatingModel", b =>
+                {
+                    b.HasOne("proj.Models.RecipeModel", "Recipe")
+                        .WithMany("Ratings")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Recipe");
+                });
+
             modelBuilder.Entity("proj.Models.RecipeModel", b =>
                 {
                     b.HasOne("proj.Models.CategoryModel", "Category")
@@ -437,9 +479,7 @@ namespace proj.Data.Migrations
 
                     b.HasOne("proj.Models.ContestModel", "Contest")
                         .WithMany()
-                        .HasForeignKey("ContestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ContestId");
 
                     b.Navigation("Category");
 
@@ -454,6 +494,8 @@ namespace proj.Data.Migrations
             modelBuilder.Entity("proj.Models.RecipeModel", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Ratings");
                 });
 
             modelBuilder.Entity("proj.Models.UserCustom", b =>
