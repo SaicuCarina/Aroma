@@ -1,0 +1,79 @@
+﻿@model proj.Models.RecipeModel
+
+@{
+    ViewData["Title"] = "Recipe Details";
+}
+
+<div class="recipe-details">
+    <h2>@Model.Title</h2>
+    <div class="recipe-meta">
+        <small>Posted by @Model.UserName on @Model.Date.ToString("dd MMM yyyy")</small><br>
+        <small>Category: @Model.Category.CategoryName</small><br>
+        <small>Difficulty: @Model.Difficulty</small><br>
+        <small>Time to make: @Model.Time</small>
+    </div>
+
+    <div class="recipe-content">
+        <h3>Recipe Content</h3>
+        <p>@Model.Content</p>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.Photo))
+    {
+        <div class="recipe-photo">
+            <img src="@Model.Photo" alt="Recipe Photo" class="img-fluid" />
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.Video))
+    {
+        <div class="recipe-video">
+            <iframe width="560" height="315" src="@Model.Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+    }
+
+    <div>
+        <h3>Leave a Comment or Rating</h3>
+        <form asp-action="Details" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <div class="form-group">
+                <label for="commentContent">Comment</label>
+                <textarea id="commentContent" name="commentContent" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="rating">Rating</label>
+                <select id="rating" name="rating" class="form-control">
+                    <option value="">-- Select a rating --</option>
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        <option value="@i">@i star@(i > 1 ? "s" : "")</option>
+                    }
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+
+    <div>
+        <h3>Comments</h3>
+        @if (Model.Comments.Any())
+        {
+            foreach (var comment in Model.Comments.OrderByDescending(c => c.Date))
+            {
+                <div>
+                    <strong>@comment.UserName</strong> (@comment.Date.ToShortDateString()):
+                    <p>@comment.Content</p>
+                </div>
+            }
+        }
+        else
+        {
+            <p>No comments yet.</p>
+        }
+    </div>
+
+    <div>
+        <h3>Average Rating: @ViewBag.AverageRating.ToString("F1")</h3>
+    </div>
+
+    </div>

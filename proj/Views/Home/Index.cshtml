@@ -1,0 +1,31 @@
+﻿@model IEnumerable<proj.Models.RecipeModel>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="recipes-list">
+    <h2>Latest Recipes</h2>
+    @if (!Model.Any())
+    {
+        <p>No recipes available.</p>
+    }
+    else
+    {
+        <ul>
+            @foreach (var recipe in Model)
+            {
+                <li>
+                    <h3>@recipe.Title</h3>
+                    <small>Posted by @recipe.UserName on @recipe.Date.ToString("dd MMM yyyy")</small>
+                    <p>@recipe.Category</p>
+                    @if (!string.IsNullOrEmpty(recipe.Photo))
+                    {
+                        <img src="~/imag/@recipe.Photo" alt="Article Image" class="news-photo" />
+                    }
+                    <a href="@Url.Action("Details", "Recipe", new { id = recipe.Id })" class="news-readmore">Read more</a>
+                </li>
+            }
+        </ul>
+    }
+</div>

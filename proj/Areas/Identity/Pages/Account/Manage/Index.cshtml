@@ -1,0 +1,30 @@
+﻿@page
+@model proj.Areas.Identity.Pages.Account.Manage.IndexModel
+
+<h2>Profilul utilizatorului</h2>
+
+<!-- Afișează username-ul -->
+<p><strong>Utilizator:</strong> @Model.Username</p>
+
+<hr />
+
+<!-- Afișează rețetele utilizatorului -->
+<h3>Rețetele tale</h3>
+
+@if (Model.UserRecipes != null && Model.UserRecipes.Any())
+{
+    <ul>
+        @foreach (var recipe in Model.UserRecipes)
+        {
+            <li>
+                <strong>@recipe.Title</strong> - Publicat la: @recipe.Date.ToString("dd MMM yyyy")
+                <p>@recipe.Content</p>
+                <hr />
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>Nu ai publicat încă nicio rețetă.</p>
+}

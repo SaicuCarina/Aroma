@@ -1,0 +1,70 @@
+﻿@model proj.Models.RecipeModel
+
+<div class="recipe-details">
+    <h2>@Model.Title</h2>
+    <div class="recipe-meta">
+        <small>Posted by @Model.UserName on @Model.Date.ToString("dd MMM yyyy")</small><br>
+        <small>Category: @Model.Category.CategoryName</small><br>
+        <small>Difficulty: @Model.Difficulty</small><br>
+        <small>Time to make: @Model.Time</small><br>
+        <small>Average Rating: @Model.AverageRating.ToString("0.0")</small>
+    </div>
+
+    <div class="recipe-content">
+        <h3>Recipe Content</h3>
+        <p>@Model.Content</p>
+    </div>
+
+    <div class="recipe-comments">
+        <h3>Comments</h3>
+        @if (Model.Comments != null && Model.Comments.Any())
+        {
+            @foreach (var comment in Model.Comments)
+            {
+                <div class="comment">
+                    <strong>@comment.UserName</strong>: @comment.Content
+                    <small class="text-muted">Posted on @comment.Date.ToString("dd MMM yyyy")</small>
+                </div>
+            }
+        }
+        else
+        {
+            <p>No comments yet. Be the first to comment!</p>
+        }
+    </div>
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="add-comment">
+            <h3>Leave a Comment</h3>
+            <form asp-action="AddComment" method="post">
+                <input type="hidden" name="recipeId" value="@Model.Id" />
+                <textarea name="commentContent" class="form-control" rows="3" placeholder="Write your comment..."></textarea>
+                <br />
+                <button type="submit" class="btn btn-primary">Submit Comment</button>
+            </form>
+        </div>
+    }
+    else
+    {
+        <p class="text-muted">You must be logged in to leave a comment. <a href="/Identity/Account/Login">Login here</a>.</p>
+    }
+
+
+    <div class="add-rating">
+        <h3>Rate this Recipe</h3>
+        <form asp-action="AddRating" method="post">
+            <input type="hidden" name="recipeId" value="@Model.Id" />
+            <div class="rating-stars">
+                @for (int i = 1; i <= 5; i++)
+                {
+                    <label>
+                        <input type="radio" name="ratingValue" value="@i" />
+                        @i Star(s)
+                    </label>
+                }
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Rating</button>
+        </form>
+    </div>
+</div>
