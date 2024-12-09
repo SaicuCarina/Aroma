@@ -41,6 +41,8 @@ namespace proj.Controllers
                 _context.Add(recipe);
                 await _context.SaveChangesAsync();
 
+                TempData["SuccessMessage"] = "The recipe has been added successfully!";
+
                 return RedirectToPage("/Account/Manage/Index", new { area = "Identity" });
             }
             catch (Exception ex)

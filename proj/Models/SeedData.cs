@@ -45,7 +45,6 @@ namespace proj.Models
                 //ADMIN b0 - admin 10
                 //CORINA b1 - admin 10
                 //CARINA b2 - admin 10
-                //EDITOR b3 - editor 11 
                 //USER b4 - user 12
 
                 // CREAREA USERILOR IN BD
@@ -92,22 +91,6 @@ namespace proj.Models
                     PasswordHash = hasher.HashPassword(null, "Carina1!"),
                     FirstName = "Carina",
                     LastName = "Saicu"
-
-                },
-
-                new UserCustom
-                {
-                    // primary key
-                    Id = "8e445865-a24d-4543-a6c6-9443d048cdb3",
-
-                    UserName = "editor@proiect.com",
-                    EmailConfirmed = true,
-                    NormalizedEmail = "EDITOR@PROIECT.COM",
-                    Email = "editor@proiect.com",
-                    NormalizedUserName = "EDITOR@PROIECT.COM",
-                    PasswordHash = hasher.HashPassword(null, "Editor1!"),
-                    FirstName = "Capul",
-                    LastName = "La design"
 
                 },
 

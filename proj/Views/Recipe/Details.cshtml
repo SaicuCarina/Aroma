@@ -60,15 +60,23 @@
         {
             foreach (var comment in Model.Comments.OrderByDescending(c => c.Date))
             {
+                // Retrieve the rating for this user and recipe (if any)
+                var userRating = Model.Ratings.FirstOrDefault(r => r.UserName == comment.UserName);
+
                 <div>
-                    <strong>@comment.UserName</strong> (@comment.Date.ToShortDateString()):
+                    <strong>@comment.UserName</strong>
+                    @if (userRating != null)
+                    {
+                        <span> - Rating: @userRating.StarNumber/5</span>
+                    }
+                    <span> (@comment.Date.ToShortDateString()):</span>
                     <p>@comment.Content</p>
                 </div>
             }
         }
         else
         {
-            <p>No comments yet.</p>
+            <p>No comments yet. Be the first to leave one!</p>
         }
     </div>
 
