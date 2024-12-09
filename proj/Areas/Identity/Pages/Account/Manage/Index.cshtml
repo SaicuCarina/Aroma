@@ -3,12 +3,18 @@
 
 <h2>Profilul utilizatorului</h2>
 
-<!-- Afișează username-ul -->
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
 <p><strong>Utilizator:</strong> @Model.Username</p>
 
 <hr />
 
-<!-- Afișează rețetele utilizatorului -->
+
 <h3>Rețetele tale</h3>
 
 @if (Model.UserRecipes != null && Model.UserRecipes.Any())

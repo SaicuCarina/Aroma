@@ -13,7 +13,6 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        // Obține rețetele în ordine descrescătoare după data publicării
         var recipes = _context.Recipes
             .OrderByDescending(r => r.Date)
             .ToList();
