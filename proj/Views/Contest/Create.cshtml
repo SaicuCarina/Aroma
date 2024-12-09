@@ -1,0 +1,22 @@
+﻿@model proj.Models.ContestModel
+
+<h2>Add Contest</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="Month"></label>
+        <input asp-for="Month" class="form-control" />
+        <span asp-validation-for="Month" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Year"></label>
+        <input asp-for="Year" class="form-control" />
+        <span asp-validation-for="Year" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Theme"></label>
+        <input asp-for="Theme" class="form-control" />
+        <span asp-validation-for="Theme" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Add Contest</button>
+</form>

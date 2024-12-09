@@ -13,14 +13,14 @@ namespace proj.Models
 
         [Key]
         public int Id { get; set; }
-        [Required(ErrorMessage = "Titlul este obligatoriu")]
+        [Required(ErrorMessage = "The Title is mandatory.")]
         public string Title { get; set; }
-        [Required(ErrorMessage = "Continutul articolului este obligatoriu")]
+        [Required(ErrorMessage = "The Article Content is mandatory.")]
         public string Content { get; set; }
         public DateTime Date { get; set; }
         public string Photo { get; set; }
         public string Video { get; set; }
-        [Required(ErrorMessage = "Categoria este obligatorie")]
+        [Required(ErrorMessage = "The Category is mandatory.")]
         public int CategoryId { get; set; }
         public virtual CategoryModel Category { get; set; }
         [BindNever]
