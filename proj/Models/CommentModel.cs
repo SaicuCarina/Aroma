@@ -11,8 +11,8 @@ namespace proj.Models
         public virtual RecipeModel Recipe { get; set; }
         [Required]
         public string UserName { get; set; }
-        public string Content { get; set; } // Comentariul poate fi null
-        public int? Rating { get; set; } // Ratingul poate fi null
+        public string Content { get; set; }
+        public int? Rating { get; set; }
         public DateTime Date { get; set; }
     }
 }

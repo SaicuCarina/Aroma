@@ -116,26 +116,64 @@ namespace proj.Areas.Identity.Pages.Account.Manage
             var email = await _userManager.GetEmailAsync(user);
             if (Input.NewEmail != email)
             {
-                var userId = await _userManager.GetUserIdAsync(user);
-                var code = await _userManager.GenerateChangeEmailTokenAsync(user, Input.NewEmail);
-                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                var callbackUrl = Url.Page(
-                    "/Account/ConfirmEmailChange",
-                    pageHandler: null,
-                    values: new { area = "Identity", userId = userId, email = Input.NewEmail, code = code },
-                    protocol: Request.Scheme);
-                await _emailSender.SendEmailAsync(
-                    Input.NewEmail,
-                    "Confirm your email",
-                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                // Update email
+                var setEmailResult = await _userManager.SetEmailAsync(user, Input.NewEmail);
+                if (!setEmailResult.Succeeded)
+                {
+                    foreach (var error in setEmailResult.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    await LoadAsync(user);
+                    return Page();
+                }
 
-                StatusMessage = "Confirmation link to change email sent. Please check your email.";
+                // Update username if email is used as username
+                var setUserNameResult = await _userManager.SetUserNameAsync(user, Input.NewEmail);
+                if (!setUserNameResult.Succeeded)
+                {
+                    foreach (var error in setUserNameResult.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    await LoadAsync(user);
+                    return Page();
+                }
+
+                // Update normalized values
+                user.NormalizedEmail = Input.NewEmail.ToUpper();
+                user.NormalizedUserName = Input.NewEmail.ToUpper();
+
+                // Set email as confirmed
+                user.EmailConfirmed = true;
+
+                // Refresh security stamp
+                await _userManager.UpdateSecurityStampAsync(user);
+
+                // Save changes to the database
+                var updateResult = await _userManager.UpdateAsync(user);
+                if (!updateResult.Succeeded)
+                {
+                    foreach (var error in updateResult.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    await LoadAsync(user);
+                    return Page();
+                }
+
+                // Refresh user's claims to reflect the updated username/email in session
+                await _signInManager.RefreshSignInAsync(user);
+
+                StatusMessage = "Your email and username have been updated, and your email is now confirmed.";
                 return RedirectToPage();
             }
 
             StatusMessage = "Your email is unchanged.";
             return RedirectToPage();
         }
+
+
 
         public async Task<IActionResult> OnPostSendVerificationEmailAsync()
         {

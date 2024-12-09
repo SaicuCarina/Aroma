@@ -1,0 +1,23 @@
+﻿@model proj.Models.ContestModel
+
+<h2>Current Contest</h2>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-warning">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+@if (Model != null)
+{
+    <div class="contest-details">
+        <h3>@Model.Theme</h3>
+        <p><strong>Month:</strong> @Model.Month</p>
+        <p><strong>Year:</strong> @Model.Year</p>
+    </div>
+}
+else
+{
+    <p>No contest for the current month.</p>
+}
