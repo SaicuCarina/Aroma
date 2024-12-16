@@ -18,19 +18,27 @@
         <p>@Model.Content</p>
     </div>
 
-    @if (!string.IsNullOrEmpty(Model.Photo))
+    @if (Model.PhotoPath != null)
     {
         <div class="recipe-photo">
-            <img src="@Model.Photo" alt="Recipe Photo" class="img-fluid" />
+            <img src="~/imag/@Model.PhotoPath" alt="Recipe Photo" class="img-fluid" />
         </div>
     }
 
-    @if (!string.IsNullOrEmpty(Model.Video))
+@*     @if (Model.VideoPath != null)
     {
         <div class="recipe-video">
-            <iframe width="560" height="315" src="@Model.Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <iframe width="560" height="315" src="~/imag/@Model.VideoPath" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
-    }
+    } *@
+
+    @if (Model.VideoPath != null)
+{
+    <div class="recipe-video">
+        <iframe width="560" height="315" src="@Url.Content("~/imag/" + Model.VideoPath)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+}
+
 
     <div>
         <h3>Leave a Comment or Rating</h3>

@@ -32,13 +32,26 @@ namespace proj.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Content,Photo,Video,CategoryId,Time,Difficulty")] RecipeModel recipe)
+        public async Task<IActionResult> Create(RecipeModel recipe)
         {
             try
             {
                 recipe.Date = DateTime.Now;
                 recipe.UserName = User.Identity.Name; // Setează utilizatorul curent
-                _context.Add(recipe);
+                //_context.Add(recipe);
+
+                var picture = recipe.Photo;
+
+                recipe.PhotoPath = picture.FileName;
+                recipe.VideoPath = recipe.Video.FileName; 
+
+                var basePath = "C:\\Users\\drgem\\source\\repos\\Aroma\\proj\\wwwroot\\imag\\"; //de schimbat fiecare
+                var fullPath = Path.Combine(basePath, recipe.PhotoPath);
+                var fileStream = new FileStream(fullPath, FileMode.Create, FileAccess.Write);
+
+                recipe.Photo.CopyTo(fileStream);
+
+                _context.Recipes.Add(recipe);
                 await _context.SaveChangesAsync();
 
                 TempData["SuccessMessage"] = "The recipe has been added successfully!";

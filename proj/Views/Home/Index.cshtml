@@ -19,9 +19,9 @@
                     <h3>@recipe.Title</h3>
                     <small>Posted by @recipe.UserName on @recipe.Date.ToString("dd MMM yyyy")</small>
                     <p>@recipe.Category</p>
-                    @if (!string.IsNullOrEmpty(recipe.Photo))
+                    @if (!string.IsNullOrEmpty(recipe.PhotoPath))
                     {
-                        <img src="~/imag/@recipe.Photo" alt="Article Image" class="news-photo" />
+                        <img src="~/imag/@recipe.PhotoPath" alt="Article Image" class="news-photo" />
                     }
                     <a href="@Url.Action("Details", "Recipe", new { id = recipe.Id })" class="news-readmore">Read more</a>
                 </li>

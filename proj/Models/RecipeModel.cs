@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Xml.Linq;
 
 namespace proj.Models
@@ -18,8 +19,13 @@ namespace proj.Models
         [Required(ErrorMessage = "The Article Content is mandatory.")]
         public string Content { get; set; }
         public DateTime Date { get; set; }
-        public string Photo { get; set; }
-        public string Video { get; set; }
+        public string PhotoPath { get; set; }
+        public string VideoPath { get; set; }
+        [NotMapped]
+        public IFormFile Photo { get; set; }
+        [NotMapped]
+        public IFormFile Video { get; set; }
+
         [Required(ErrorMessage = "The Category is mandatory.")]
         public int CategoryId { get; set; }
         public virtual CategoryModel Category { get; set; }

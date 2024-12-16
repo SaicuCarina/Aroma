@@ -25,7 +25,7 @@ namespace proj.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Month,Year,Theme")] ContestModel contest)
+        public async Task<IActionResult> Create(/*[Bind("Month,Year,Theme")]*/ ContestModel contest)
         {
             if (ModelState.IsValid)
             {
