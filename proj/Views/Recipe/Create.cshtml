@@ -10,8 +10,13 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group input-cell">
+                <input type="checkbox" asp-for="IsContest" id="IsContestCheckbox" onclick="checkContest()" />
+                <label asp-for="IsContest" class="control-label">Submit for this month's contest</label>
+            </div>
 
             <div class="form-group input-cell">
                 <label asp-for="Title" class="control-label"></label>
@@ -25,15 +30,15 @@
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
 
-            <div class="form-group input-cell">
+            <div class="form-group">
                 <label asp-for="Photo" class="control-label"></label>
-                <input asp-for="Photo" class="form-control" />
+                <input asp-for="Photo" type="file" class="form-control" />
                 <span asp-validation-for="Photo" class="text-danger"></span>
             </div>
 
             <div class="form-group input-cell">
                 <label asp-for="Video" class="control-label"></label>
-                <input asp-for="Video" class="form-control" placeholder="Paste video link (e.g., YouTube)" />
+                <input asp-for="Video" class="form-control" />
                 <span asp-validation-for="Video" class="text-danger"></span>
             </div>
 
@@ -51,7 +56,7 @@
 
             <div class="form-group input-cell">
                 <label asp-for="Difficulty" class="control-label"></label>
-                <input asp-for="Difficulty" class="form-control" />
+                <input asp-for="Difficulty" class="form-control" type="number" min="1" max="5" />
                 <span asp-validation-for="Difficulty" class="text-danger"></span>
             </div>
 
@@ -64,5 +69,5 @@
 
 
 @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
 }

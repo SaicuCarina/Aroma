@@ -12,12 +12,121 @@
 @if (Model != null)
 {
     <div class="contest-details">
-        <h3>@Model.Theme</h3>
-        <p><strong>Month:</strong> @Model.Month</p>
-        <p><strong>Year:</strong> @Model.Year</p>
+        <div class="contest-header">
+            <h3>@Model.Theme</h3>
+            <p class="month-year"><strong>Month:</strong> @Model.Month <strong>Year:</strong> @Model.Year</p>
+        </div>
     </div>
+    <h3>Recipes Submitted for Contest</h3>
+    @if (ViewBag.ContestRecipes != null && ((List<proj.Models.RecipeModel>)ViewBag.ContestRecipes).Any())
+    {
+        <div class="recipe-grid">
+            @for (int i = 0; i < ((List<proj.Models.RecipeModel>)ViewBag.ContestRecipes).Count; i++)
+            {
+                if (i % 3 == 0)
+                {
+                    @: <div class="row">
+                }
+
+                var recipe = ((List<proj.Models.RecipeModel>)ViewBag.ContestRecipes)[i];
+                <div class="col-md-4">
+                    <div class="recipe-card">
+                        <h4>@recipe.Title</h4>
+                        <small>Submitted by @recipe.UserName on @recipe.Date.ToString("dd MMM yyyy")</small>
+                        @if (!string.IsNullOrEmpty(recipe.PhotoPath))
+                        {
+                            <img src="~/imag/@recipe.PhotoPath" alt="Recipe Image" class="recipe-photo" />
+                        }
+                        <a href="@Url.Action("Details", "Recipe", new { id = recipe.Id })" class="news-readmore">Read more</a>
+                    </div>
+                </div>
+
+                if (i % 3 == 2 || i == ((List<proj.Models.RecipeModel>)ViewBag.ContestRecipes).Count - 1)
+                {
+                    @: </div>
+                }
+            }
+        </div>
+    }
+    else
+    {
+        <p>No recipes submitted for this contest yet.</p>
+    }
 }
 else
 {
     <p>No contest for the current month.</p>
 }
+
+<style>
+    .contest-details {
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        padding: 20px;
+        margin-top: 20px;
+        border-radius: 5px;
+    }
+
+    .contest-header h3 {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+
+    .contest-header .month-year {
+        font-size: 16px;
+        color: #555;
+    }
+
+    .recipe-grid {
+        margin-top: 20px;
+    }
+
+    .row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .col-md-4 {
+        flex: 1;
+        margin: 0 10px;
+        max-width: 30%;
+    }
+
+    .recipe-card {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .recipe-card h4 {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+
+    .recipe-card small {
+        display: block;
+        margin-bottom: 10px;
+        color: #666;
+    }
+
+    .news-readmore {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    .news-readmore:hover {
+        text-decoration: underline;
+    }
+
+    .recipe-photo {
+        width: 300px;
+        height: 300px;
+        object-fit: cover;
+        border-radius: 5px;
+        margin: 10px auto;
+        display: block;
+    }
+</style>

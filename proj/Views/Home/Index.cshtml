@@ -1,31 +1,140 @@
 ﻿@model IEnumerable<proj.Models.RecipeModel>
 
+
 @{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="recipes-list">
-    <h2>Latest Recipes</h2>
-    @if (!Model.Any())
-    {
-        <p>No recipes available.</p>
-    }
-    else
-    {
-        <ul>
-            @foreach (var recipe in Model)
-            {
-                <li>
-                    <h3>@recipe.Title</h3>
-                    <small>Posted by @recipe.UserName on @recipe.Date.ToString("dd MMM yyyy")</small>
-                    <p>@recipe.Category</p>
-                    @if (!string.IsNullOrEmpty(recipe.Photo))
-                    {
-                        <img src="~/imag/@recipe.Photo" alt="Article Image" class="news-photo" />
-                    }
-                    <a href="@Url.Action("Details", "Recipe", new { id = recipe.Id })" class="news-readmore">Read more</a>
-                </li>
-            }
-        </ul>
-    }
+<div class="homepage-layout">
+    <aside class="ads-left">
+        @if (ViewData["OddAd"] is proj.Models.AdvertisementModel oddAd && oddAd != null)
+        {
+            <a href="@oddAd.Link" target="_blank">
+                <img src="~/imag/@oddAd.PhotoPath" alt="Ad Image" class="ad-photo" />
+            </a>
+        }
+        else
+        {
+            <p>No advertisement available.</p>
+        }
+    </aside>
+
+    <main class="recipes-list">
+        <h2>Latest Recipes</h2>
+        @if (!Model.Any())
+        {
+            <p>No recipes available.</p>
+        }
+        else
+        {
+            <ul class="recipe-grid">
+                @foreach (var recipe in Model)
+                {
+                    <li class="recipe-item">
+                        <h3>@recipe.Title</h3>
+                        <small>Posted by @recipe.UserName on @recipe.Date.ToString("dd MMM yyyy")</small>
+                        <p>@recipe.Category</p>
+                        @if (!string.IsNullOrEmpty(recipe.PhotoPath))
+                        {
+                            <img src="~/imag/@recipe.PhotoPath" alt="Recipe Image" class="recipe-photo" />
+                        }
+                        <a href="@Url.Action("Details", "Recipe", new { id = recipe.Id })" class="news-readmore">Read more</a>
+                    </li>
+                }
+            </ul>
+        }
+    </main>
+
+    <aside class="ads-right">
+        @if (ViewData["EvenAd"] is proj.Models.AdvertisementModel evenAd && evenAd != null)
+        {
+            <a href="@evenAd.Link" target="_blank">
+                <img src="~/imag/@evenAd.PhotoPath" alt="Ad Image" class="ad-photo" />
+            </a>
+        }
+        else
+        {
+            <p>No advertisement available.</p>
+        }
+    </aside>
 </div>
+
+<style>
+    /* Asigură că navbar-ul ocupă un spațiu corect pe verticală */
+    body {
+        padding-top: 70px; /* Asigură spațiu pentru navbar */
+    }
+
+    .homepage-layout {
+        display: grid;
+        grid-template-columns: 1fr 3fr 1fr;
+        gap: 10px;
+        padding-top: 10px; /* Adaugă un mic spațiu între navbar și primul element */
+    }
+
+    .ads-left, .ads-right {
+        background-color: #f4f4f4;
+        padding: 10px;
+        border: 1px solid #ddd;
+        position: sticky;
+        top: 100px; /* Asigură că reclamele vor începe sub navbar */
+        align-self: start; /* Asigură că reclamele se aliniază sus în cadrul său */
+        z-index: 10; /* Asigură că reclamele vor fi vizibile deasupra altor elemente */
+    }
+
+        .ads-left .ad, .ads-right .ad {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+    .ad-photo {
+        position: sticky;
+        width: 300px; /* Lățimea dorită */
+        height: 500px; /* Înălțimea dorită */
+        object-fit: cover; /* Asigură că imaginea se potrivește în dimensiunile setate */
+    }
+
+    .recipes-list {
+        background-color: #fff;
+        padding: 10px;
+        border: 1px solid #ddd;
+    }
+
+    .recipe-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* 2 coloane */
+        gap: 20px; /* Spațiu între rețete */
+        list-style: none;
+        padding: 0;
+    }
+
+    .recipe-item {
+        background-color: #f9f9f9;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        text-align: center;
+    }
+
+    .recipe-photo {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 5px;
+        margin: 10px auto;
+        display: block;
+    }
+
+    .news-readmore {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+        .news-readmore:hover {
+            text-decoration: underline;
+        }
+
+</style>

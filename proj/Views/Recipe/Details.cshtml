@@ -13,22 +13,56 @@
         <small>Time to make: @Model.Time</small>
     </div>
 
-    <div class="recipe-content">
-        <h3>Recipe Content</h3>
-        <p>@Model.Content</p>
+    <div>
+        <h3>Average Rating: @ViewBag.AverageRating.ToString("F1")</h3>
+        <div class="rating-stars">
+            @for (int i = 1; i <= 5; i++)
+            {
+                int fullParts = (int)ViewBag.AverageRating;
+                double fractionalPart = ViewBag.AverageRating - fullParts;
+
+                if (i <= fullParts)
+                {
+                    <span class="star filled">&#9733;</span>
+                }
+                else if (i == fullParts + 1 && fractionalPart >= 0.5)
+                {
+                    <span class="star half-filled">&#9733;</span>
+                }
+                else if (i == fullParts + 1 && fractionalPart > 0.1)
+                {
+                    <span class="star half-filled">&#9733;</span>
+                }
+                else
+                {
+                    <span class="star empty">&#9734;</span>
+                }
+            }
+        </div>
     </div>
 
-    @if (!string.IsNullOrEmpty(Model.Photo))
+    <div class="recipe-content">
+        <h3>Recipe Content</h3>
+        <div style="white-space: pre; word-wrap: break-word;">
+            @Model.Content
+        </div>
+    </div>
+
+    @if (Model.PhotoPath != null)
     {
         <div class="recipe-photo">
-            <img src="@Model.Photo" alt="Recipe Photo" class="img-fluid" />
+            <img src="~/imag/@Model.PhotoPath" alt="Recipe Photo" class="img-fluid" style=" width:450px; height: 450px " />
         </div>
     }
 
-    @if (!string.IsNullOrEmpty(Model.Video))
+    <br/>
+
+    @if (Model.VideoPath != null)
     {
         <div class="recipe-video">
-            <iframe width="560" height="315" src="@Model.Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <video controls="controls">
+                <source src="~/imag/@Model.VideoPath" type="video/mp4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen />
+            </video>
         </div>
     }
 
@@ -80,8 +114,27 @@
         }
     </div>
 
-    <div>
-        <h3>Average Rating: @ViewBag.AverageRating.ToString("F1")</h3>
-    </div>
+</div>
 
-    </div>
+
+<style>
+    .star {
+        font-size: 24px;
+        margin-right: 5px;
+    }
+
+    .filled {
+        color: gold;
+    }
+
+    .half-filled {
+        background: linear-gradient(to right, gold 50%, #ccc 50%);
+        -webkit-background-clip: text;
+        color: transparent;
+        font-size: 24px;
+    }
+
+    .empty {
+        color: #ccc;
+    }
+</style>

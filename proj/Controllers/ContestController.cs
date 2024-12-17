@@ -56,6 +56,14 @@ namespace proj.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
+            // Fetch recipes associated with this contest
+            var contestRecipes = _context.Recipes
+                .Where(r => r.ContestId == contest.Id)
+                .OrderByDescending(r => r.Date)
+                .ToList();
+
+            ViewBag.ContestRecipes = contestRecipes;
+
             return View(contest);
         }
     }

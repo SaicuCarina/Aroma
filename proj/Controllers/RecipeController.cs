@@ -32,13 +32,49 @@ namespace proj.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Content,Photo,Video,CategoryId,Time,Difficulty")] RecipeModel recipe)
+        public async Task<IActionResult> Create([Bind("Title,Content,Photo,Video,CategoryId,Time,Difficulty,IsContest")] RecipeModel recipe)
         {
             try
             {
                 recipe.Date = DateTime.Now;
-                recipe.UserName = User.Identity.Name; // Setează utilizatorul curent
-                _context.Add(recipe);
+                recipe.UserName = User.Identity.Name;
+
+                // If recipe is for the contest, associate it with the current contest
+                if (recipe.IsContest)
+                {
+                    var currentMonth = DateTime.Now.ToString("MMMM");
+                    var currentYear = DateTime.Now.Year.ToString();
+
+                    // Find the current contest
+                    var currentContest = _context.Contests
+                        .FirstOrDefault(c => c.Month == currentMonth && c.Year == currentYear);
+
+                    if (currentContest != null)
+                    {
+                        recipe.ContestId = currentContest.Id;
+                    }
+                    else
+                    {
+                        TempData["ErrorMessage"] = "No contest available for the current month!";
+                        return RedirectToAction("Create");
+                    }
+                }
+
+                var picture = recipe.Photo;
+
+                recipe.PhotoPath = picture.FileName;
+                recipe.VideoPath = recipe.Video.FileName;
+
+                var basePath = "C:\\Users\\Corina\\source\\repos\\Aroma\\proj\\wwwroot\\imag\\"; //de schimbat fiecare
+                var fullPathPhoto = Path.Combine(basePath, recipe.PhotoPath);
+                var fullPathVideo = Path.Combine(basePath, recipe.VideoPath);
+                var fileStreamPhoto = new FileStream(fullPathPhoto, FileMode.Create, FileAccess.Write);
+                var fileStreamVideo = new FileStream(fullPathVideo, FileMode.Create, FileAccess.Write);
+
+                recipe.Photo.CopyTo(fileStreamPhoto);
+                recipe.Video.CopyTo(fileStreamVideo);
+
+                _context.Recipes.Add(recipe);
                 await _context.SaveChangesAsync();
 
                 TempData["SuccessMessage"] = "The recipe has been added successfully!";
@@ -56,6 +92,7 @@ namespace proj.Controllers
 
             return View(recipe);
         }
+
 
         [HttpGet]
         public IActionResult Details(int id)

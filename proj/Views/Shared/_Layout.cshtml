@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/proj.styles.css" asp-append-version="true" />
+
 </head>
 <body>
     <header>
@@ -36,6 +37,10 @@
                             <li class="nav-item">
                                 <a class="nav-link" id="add-contest" asp-controller="Contest" asp-action="Create">Add Contest</a>
                             </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" id="add-contest" asp-controller="Advertisement" asp-action="Create">Add Advertisement</a>
+                            </li>
                         }
                     </ul>
                     <partial name="_LoginPartial" />
@@ -60,3 +65,20 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
+<style>
+    .navbar {
+        position: fixed; /* Fixează navbar-ul la partea de sus a paginii */
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1000; /* Asigură că navbar-ul va rămâne deasupra altor elemente */
+        box-shadow: 0 4px 2px -2px gray; /* Adaugă o umbră pentru a face navbar-ul să iasă în evidență */
+        background-color: #fff; /* Setează fundal alb pentru navbar */
+        padding: 10px 0; /* Setează un mic padding pentru navbar */
+    }
+
+    body {
+        padding-top: 70px; /* Adaugă un spațiu la începutul corpului pentru a evita suprapunerea navbar-ului fixat */
+    }
+</style>

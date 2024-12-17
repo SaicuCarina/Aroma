@@ -17,5 +17,6 @@ namespace proj.Data
         public DbSet<UserCustom> UsersCustom { get; set; }
         public DbSet<ContestModel> Contests { get; set; }
         public DbSet<RatingModel> Ratings { get; set; }
+        public DbSet<AdvertisementModel> Advertisements { get; set; }
     }
 }
