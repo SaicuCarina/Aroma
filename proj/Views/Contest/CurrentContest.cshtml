@@ -13,10 +13,18 @@
 {
     <div class="contest-details">
         <div class="contest-header">
-            <h3>@Model.Theme</h3>
-            <p class="month-year"><strong>Month:</strong> @Model.Month <strong>Year:</strong> @Model.Year</p>
+            <div class="contest-info">
+                <h3>@Model.Theme</h3>
+                <p class="month-year"><strong>Month:</strong> @Model.Month <strong>Year:</strong> @Model.Year</p>
+            </div>
+            <div class="contest-image">
+                <img src="~/imag/@Model.PhotoPath" alt="Contest Image" class="contest-photo" />
+            </div>
         </div>
     </div>
+
+
+
     <h3>Recipes Submitted for Contest</h3>
     @if (ViewBag.ContestRecipes != null && ((List<proj.Models.RecipeModel>)ViewBag.ContestRecipes).Any())
     {
@@ -129,4 +137,36 @@ else
         margin: 10px auto;
         display: block;
     }
+
+    .contest-header {
+    display: flex;
+    align-items: center; /* Aliniază vertical textul și imaginea */
+    justify-content: center; /* Centrează conținutul pe orizontală */
+    gap: 10px; /* Reduce spațiul dintre text și imagine */
+    }
+
+    .contest-info {
+        flex-shrink: 0; /* Asigură că textul nu se micșorează în layout */
+        text-align: left; /* Asigură alinierea textului la stânga */
+    }
+
+    .contest-photo {
+        width: 250px; /* Dimensiune mai mică pentru imagine */
+        height: 250px;
+        object-fit: cover; /* Menține proporțiile corecte */
+        border: 1px solid #ddd; /* Adaugă o margine discretă */
+        border-radius: 5px; /* Opțional: colțuri rotunjite */
+    }
+
+    .contest-header h3 {
+        margin: 0; /* Elimină spațiul de sus și de jos al titlului */
+        font-size: 1.5em; /* Dimensiune ajustată pentru titlu */
+    }
+
+    .contest-header p {
+        margin: 5px 0; /* Reduce spațiul dintre paragrafe */
+        font-size: 1em; /* Dimensiune ușor mai mică pentru detalii */
+    }
+
+
 </style>

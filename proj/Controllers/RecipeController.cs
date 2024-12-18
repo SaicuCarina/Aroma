@@ -121,7 +121,8 @@ namespace proj.Controllers
         {
             if (!User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Login", "Account");
+                return Redirect("/Identity/Account/Login");
+
             }
 
             try

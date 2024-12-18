@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace proj.Models
 {
@@ -9,5 +10,8 @@ namespace proj.Models
         public string Month { get; set; }
         public string Year { get; set; }
         public string Theme { get; set; }
+        public string PhotoPath { get; set; }
+        [NotMapped]
+        public IFormFile Photo { get; set; }
     }
 }
