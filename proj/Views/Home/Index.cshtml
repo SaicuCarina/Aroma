@@ -1,10 +1,11 @@
 ﻿@model IEnumerable<proj.Models.RecipeModel>
-
-
 @{
     ViewData["Title"] = "Home Page";
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
+    int pageSize = ViewBag.PageSize ?? 9;
 }
-
+<div class="background-container"></div>
 <div class="homepage-layout">
     <aside class="ads-left">
         @if (ViewData["OddAd"] is proj.Models.AdvertisementModel oddAd && oddAd != null)
@@ -19,8 +20,32 @@
         }
     </aside>
 
+     @if (ViewBag.IsWinner != null && (bool)ViewBag.IsWinner)
+ {
+     <div class="alert alert-success text-center mt-3">
+         Congratulations! You are the winner for this month's contest! Follow this link to complete the prize shipping address:
+         <body>
+             <a>https://workspace.google.com/products/forms/</a>
+         </body>
+     </div>
+    
+ }
+  
     <main class="recipes-list">
-        <h2>Latest Recipes</h2>
+        <h2 class="d-flex justify-content-between align-items-center">
+            Latest Recipes
+            <div class="dropdown">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    Filter
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                    <li><a class="dropdown-item" href="?sortOrder=a-z">A-Z</a></li>
+                    <li><a class="dropdown-item" href="?sortOrder=z-a">Z-A</a></li>
+                    <li><a class="dropdown-item" href="?sortOrder=chronological">Chronological</a></li>
+                    <li><a class="dropdown-item" href="?sortOrder=reverse-chronological">Reverse Chronological</a></li>
+                </ul>
+            </div>
+        </h2>
         @if (!Model.Any())
         {
             <p>No recipes available.</p>
@@ -30,19 +55,41 @@
             <ul class="recipe-grid">
                 @foreach (var recipe in Model)
                 {
+                    @if (!(User.IsInRole("User") || User.IsInRole("Admin")) && recipe.IsEligibleForVoting)
+                    {
+                        @* Dacă utilizatorul nu este "User" sau "Admin" și rețeta este din concurs, nu o afișăm *@
+                        continue;
+                    }
+
                     <li class="recipe-item">
                         <h3>@recipe.Title</h3>
-                        <small>Posted by @recipe.UserName on @recipe.Date.ToString("dd MMM yyyy")</small>
+                        <small>Posted by @recipe.UserName.Split('@')[0] on @recipe.Date.ToString("dd MMM yyyy")</small>
                         <p>@recipe.Category</p>
                         @if (!string.IsNullOrEmpty(recipe.PhotoPath))
                         {
                             <img src="~/imag/@recipe.PhotoPath" alt="Recipe Image" class="recipe-photo" />
                         }
-                        <a href="@Url.Action("Details", "Recipe", new { id = recipe.Id })" class="news-readmore">Read more</a>
+                        <a href="@Url.Action("Details", "Recipe", new { id = recipe.Id })" class="btn btn-secondary">See content</a>
+
                     </li>
                 }
             </ul>
         }
+
+        <ul class="pagination">
+            <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                <a class="page-link" asp-controller="Home" asp-action="Index" asp-route-sortOrder="@ViewBag.SortOrder" asp-route-currentPage="@(currentPage - 1)" asp-route-pageSize="@pageSize"><i class="bi bi-caret-left"></i></a>
+            </li>
+            @for (int p = 1; p <= totalPages; p++)
+            {
+                <li class="page-item @(p == currentPage ? "active" : "")">
+                    <a class="page-link" asp-controller="Home" asp-action="Index" asp-route-sortOrder="@ViewBag.SortOrder" asp-route-currentPage="@p" asp-route-pageSize="@pageSize">@p</a>
+                </li>
+            }
+            <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                <a class="page-link" asp-controller="Home" asp-action="Index" asp-route-sortOrder="@ViewBag.SortOrder" asp-route-currentPage="@(currentPage + 1)" asp-route-pageSize="@pageSize"><i class="bi bi-caret-right"></i></a>
+            </li>
+        </ul>
     </main>
 
     <aside class="ads-right">
@@ -59,17 +106,39 @@
     </aside>
 </div>
 
+
 <style>
-    /* Asigură că navbar-ul ocupă un spațiu corect pe verticală */
-    body {
-        padding-top: 70px; /* Asigură spațiu pentru navbar */
+    /* Stilul pentru div-ul de fundal */
+    .background-container {
+        position: fixed; /* Poziționează imaginea relativ la fereastra browser-ului */
+        top: 0;
+        left: 0;
+        width: 100%; /* Întinde div-ul pe toată lățimea paginii */
+        height: 100%; /* Întinde div-ul pe toată înălțimea paginii */
+        background-image: url('/imag/wallpaperv1.jpg'); /* Calea către imaginea ta */
+        background-size: cover; /* Face ca imaginea să ocupe întreaga zonă */
+        background-position: center; /* Centrează imaginea */
+        z-index: -1; /* Pune div-ul în spatele altor elemente */
     }
 
+    /* Conținutul paginii tale */
+    .content {
+        position: relative; /* Asigură-te că elementele conținutului sunt deasupra div-ului de fundal */
+        z-index: 1; /* Păstrează conținutul deasupra imaginii */
+        color: white; /* Opțional: Schimbă culoarea textului pentru a fi vizibil pe fundal */
+        padding: 20px;
+    }
+
+    .inputArea {
+        display: flex;
+        justify-content: center;
+        margin-top: 40px;
+    }
     .homepage-layout {
         display: grid;
         grid-template-columns: 1fr 3fr 1fr;
         gap: 10px;
-        padding-top: 10px; /* Adaugă un mic spațiu între navbar și primul element */
+        padding-top: 10px;
     }
 
     .ads-left, .ads-right {
@@ -77,24 +146,15 @@
         padding: 10px;
         border: 1px solid #ddd;
         position: sticky;
-        top: 100px; /* Asigură că reclamele vor începe sub navbar */
-        align-self: start; /* Asigură că reclamele se aliniază sus în cadrul său */
-        z-index: 10; /* Asigură că reclamele vor fi vizibile deasupra altor elemente */
+        top: 100px;
+        align-self: start;
+        z-index: 10;
     }
 
-        .ads-left .ad, .ads-right .ad {
-            margin-bottom: 15px;
-            padding: 10px;
-            background-color: #fff;
-            border: 1px solid #ccc;
-            text-align: center;
-        }
-
     .ad-photo {
-        position: sticky;
-        width: 300px; /* Lățimea dorită */
-        height: 500px; /* Înălțimea dorită */
-        object-fit: cover; /* Asigură că imaginea se potrivește în dimensiunile setate */
+        width: 300px;
+        height: 500px;
+        object-fit: cover;
     }
 
     .recipes-list {
@@ -105,8 +165,8 @@
 
     .recipe-grid {
         display: grid;
-        grid-template-columns: repeat(2, 1fr); /* 2 coloane */
-        gap: 20px; /* Spațiu între rețete */
+        grid-template-columns: repeat(3, 1fr); /* 3 coloane */
+        gap: 20px;
         list-style: none;
         padding: 0;
     }
@@ -127,14 +187,5 @@
         margin: 10px auto;
         display: block;
     }
-
-    .news-readmore {
-        color: #007bff;
-        text-decoration: none;
-    }
-
-        .news-readmore:hover {
-            text-decoration: underline;
-        }
 
 </style>

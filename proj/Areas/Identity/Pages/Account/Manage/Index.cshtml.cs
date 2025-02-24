@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using proj.Data; // Namespace-ul unde se află ApplicationDbContext
-using proj.Models; // Namespace-ul pentru UserCustom și RecipeModel
+using proj.Models; // Namespace-ul pentru UserCustom, RecipeModel, și AdvertisementModel
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,12 +12,12 @@ namespace proj.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<UserCustom> _userManager;
         private readonly SignInManager<UserCustom> _signInManager;
-        private readonly ApplicationDbContext _context; // Adăugăm contextul de bază de date
+        private readonly ApplicationDbContext _context;
 
         public IndexModel(
             UserManager<UserCustom> userManager,
             SignInManager<UserCustom> signInManager,
-            ApplicationDbContext context) // Injectăm contextul în constructor
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -26,7 +26,11 @@ namespace proj.Areas.Identity.Pages.Account.Manage
 
         public string Username { get; set; }
         public string StatusMessage { get; set; }
-        public List<RecipeModel> UserRecipes { get; set; } // Lista cu rețetele utilizatorului
+        public List<RecipeModel> UserRecipes { get; set; }
+        public List<AdvertisementModel> Advertisements { get; set; } // Lista cu reclamele adminului
+        public bool IsAdmin { get; set; } // Determină dacă utilizatorul este admin
+
+        public DateTime RegistrationDate { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -37,12 +41,25 @@ namespace proj.Areas.Identity.Pages.Account.Manage
             }
 
             Username = user.UserName;
+            RegistrationDate = user.RegistrationDate; // <-- Store the user's registration date
 
-            // Extrage rețetele utilizatorului curent din baza de date
-            UserRecipes = _context.Recipes // presupunând că tabelul se numește `Recipes`
-                            .Where(r => r.UserName == user.UserName) // Filtrare după utilizator
-                            .OrderByDescending(r => r.Date) // Sortare descrescătoare după dată
-                            .ToList();
+            // Determine user role
+            var roles = await _userManager.GetRolesAsync(user);
+            IsAdmin = roles.Contains("Admin");
+
+            if (IsAdmin)
+            {
+                Advertisements = _context.Advertisements
+                                         .OrderByDescending(a => a.Id)
+                                         .ToList();
+            }
+            else
+            {
+                UserRecipes = _context.Recipes
+                                       .Where(r => r.UserName == user.UserName)
+                                       .OrderByDescending(r => r.Date)
+                                       .ToList();
+            }
 
             return Page();
         }

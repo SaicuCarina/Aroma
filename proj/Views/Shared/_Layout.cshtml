@@ -3,17 +3,29 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - proj</title>
+    <title>@ViewData["Title"] - Aroma</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/proj.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+
 
 </head>
 <body>
     <header>
+
+      
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">proj</a>
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="AdminHome">Aroma <i class="bi bi-egg-fried"></i></a>
+                }
+                else
+                {
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Aroma <i class="bi bi-egg-fried"></i></a>
+                }
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -21,15 +33,20 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                               
+                            
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+
                         @if (User.IsInRole("User"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link" id="see-contest" asp-controller="Contest" asp-action="CurrentContest">See Contest</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" id="lucky-wheel" asp-controller="Wheel" asp-action="LuckyWheel">Lucky Wheel</a>
                             </li>
                         }
                         @if (User.IsInRole("Admin"))
@@ -39,10 +56,25 @@
                             </li>
 
                             <li class="nav-item">
+                                <a class="nav-link" id="see-stats" asp-controller="Recipe" asp-action="RecipeCountsByMonth">Stats</a>
+                            </li>
+
+
+                            <li class="nav-item">
                                 <a class="nav-link" id="add-contest" asp-controller="Advertisement" asp-action="Create">Add Advertisement</a>
                             </li>
                         }
                     </ul>
+
+                    <form id="searchForm" class="d-flex" asp-controller="Recipe" asp-action="Search">
+                        <div class="input-group">
+                            <input class="form-control" type="search" name="query" placeholder="Search" aria-label="Search">
+                            <button class="btn btn-outline-secondary" type="submit">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </form>
+
                     <partial name="_LoginPartial" />
                 </div>
             </div>
@@ -54,15 +86,18 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - proj - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="border-top footer text-muted" style="background-color: #fff;">
+        <div class="container text-center">
+            &copy; 2024 - Aroma - made by Emilia Dragomirescu, Corina Gherasim & Carina Saicu
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+ 
+
 </body>
 </html>
 

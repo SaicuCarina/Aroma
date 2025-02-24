@@ -18,5 +18,18 @@ namespace proj.Data
         public DbSet<ContestModel> Contests { get; set; }
         public DbSet<RatingModel> Ratings { get; set; }
         public DbSet<AdvertisementModel> Advertisements { get; set; }
+        public DbSet<FavouriteRecipe> FavouriteRecipes { get; set; }
+        public DbSet<UserRecipeVoteModel> UserRecipeVotes { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<UserRecipeVoteModel>()
+                .HasOne(v => v.Recipe)
+                .WithMany()
+                .HasForeignKey(v => v.RecipeId)
+                .OnDelete(DeleteBehavior.Cascade); 
+        }
     }
 }

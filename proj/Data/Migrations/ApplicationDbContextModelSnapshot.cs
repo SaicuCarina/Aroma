@@ -267,6 +267,28 @@ namespace proj.Data.Migrations
                     b.ToTable("Contests");
                 });
 
+            modelBuilder.Entity("proj.Models.FavouriteRecipe", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecipeId");
+
+                    b.ToTable("FavouriteRecipes");
+                });
+
             modelBuilder.Entity("proj.Models.RatingModel", b =>
                 {
                     b.Property<int>("Id")
@@ -322,6 +344,12 @@ namespace proj.Data.Migrations
                     b.Property<bool>("IsContest")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsEligibleForVoting")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("NumberOfVotes")
+                        .HasColumnType("int");
+
                     b.Property<string>("PhotoPath")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -373,8 +401,14 @@ namespace proj.Data.Migrations
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsPostingRevoked")
+                        .HasColumnType("bit");
+
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastSpinDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -399,6 +433,9 @@ namespace proj.Data.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime>("RegistrationDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -408,6 +445,12 @@ namespace proj.Data.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("hasSpunWheel")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("isWinner")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -420,6 +463,28 @@ namespace proj.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("UserRecipeVoteModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecipeId");
+
+                    b.ToTable("UserRecipeVotes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -488,6 +553,17 @@ namespace proj.Data.Migrations
                     b.Navigation("Recipe");
                 });
 
+            modelBuilder.Entity("proj.Models.FavouriteRecipe", b =>
+                {
+                    b.HasOne("proj.Models.RecipeModel", "Recipe")
+                        .WithMany()
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Recipe");
+                });
+
             modelBuilder.Entity("proj.Models.RatingModel", b =>
                 {
                     b.HasOne("proj.Models.RecipeModel", "Recipe")
@@ -514,6 +590,17 @@ namespace proj.Data.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("Contest");
+                });
+
+            modelBuilder.Entity("UserRecipeVoteModel", b =>
+                {
+                    b.HasOne("proj.Models.RecipeModel", "Recipe")
+                        .WithMany()
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Recipe");
                 });
 
             modelBuilder.Entity("proj.Models.CategoryModel", b =>

@@ -1,23 +1,50 @@
 ﻿@page
 @model RegisterConfirmationModel
 @{
-    ViewData["Title"] = "Register confirmation";
+    ViewData["Title"] = "Register Confirmation";
 }
 
-<h1>@ViewData["Title"]</h1>
-@{
-    if (@Model.DisplayConfirmAccountLink)
-    {
-<p>
-    This app does not currently have a real email sender registered, see <a href="https://aka.ms/aspaccountconf">these docs</a> for how to configure a real email sender.
-    Normally this would be emailed: <a id="confirm-link" href="@Model.EmailConfirmationUrl">Click here to confirm your account</a>
-</p>
-    }
-    else
-    {
-<p>
-        Please check your email to confirm your account.
-</p>
-    }
-}
+<div class="background-container"></div>
 
+<div class="d-flex justify-content-center align-items-center min-vh-100">
+    <div class="confirmation-container text-center bg-white p-4 shadow rounded">
+        <h2 class="mb-3">Confirm Your Email</h2>
+
+        @if (Model.DisplayConfirmAccountLink)
+        {
+            <a id="confirm-link" href="@Model.EmailConfirmationUrl" class="btn btn-primary btn-lg">Click to Confirm Email</a>
+        }
+        else
+        {
+            <p>Please check your email to confirm your account.</p>
+        }
+    </div>
+</div>
+
+<style>
+    /* Fundal */
+    .background-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('/imag/wallpaperv1.jpg');
+        background-size: cover;
+        background-position: center;
+        z-index: -1;
+    }
+
+    /* Container confirmare */
+    .confirmation-container {
+        max-width: 400px;
+        border: 1px solid #ddd;
+    }
+
+    /* Stil buton */
+    .btn-success {
+        padding: 12px 24px;
+        font-size: 1.2rem;
+        border-radius: 8px;
+    }
+</style>

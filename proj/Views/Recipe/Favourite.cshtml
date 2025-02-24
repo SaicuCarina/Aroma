@@ -1,0 +1,31 @@
+﻿@model IEnumerable<proj.Models.RecipeModel>
+
+<h2>Your Favourite Recipes</h2>
+
+@if (!Model.Any())
+{
+    <p>You have no favourite recipes yet.</p>
+}
+else
+{
+    <div class="recipe-list">
+        @foreach (var recipe in Model)
+        {
+            <li style="display: flex; align-items: center; margin-bottom: 20px;">
+                    @if (!string.IsNullOrEmpty(recipe.PhotoPath))
+                    {
+                        <div style="flex-shrink: 0; margin-right: 20px;">
+                            <img src="~/imag/@recipe.PhotoPath" alt="Recipe Image" class="recipe-photo" style="width: 200px; height: 200px;" />
+                        </div>
+                    }
+
+                    <div>
+                        <strong>@recipe.Title</strong>
+                        <p>Posted on: @recipe.Date.ToString("dd MMM yyyy")</p>
+                        <br />
+                        <a href="@Url.Action("Details", "Recipe", new { id = recipe.Id })" class="btn btn-secondary">See content</a>
+                    </div>
+                </li>
+        }
+    </div>
+}

@@ -1,73 +1,95 @@
 ﻿@model proj.Models.RecipeModel
 
 @{
-    ViewData["Title"] = "Create Recipe";
+    ViewData["Title"] = "Add Recipe";
 }
 
-<h1>Create Recipe</h1>
+<div class="background-container"></div>
 
-<h4>Recipe</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="d-flex justify-content-center align-items-start min-vh-75 pt-4">
+    <div class="form-container p-4 bg-white shadow rounded">
+        <h1 class="text-center mb-3">Add Recipe</h1>
+        <hr />
+
         <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="form-group input-cell">
-                <input type="checkbox" asp-for="IsContest" id="IsContestCheckbox" onclick="checkContest()" />
-                <label asp-for="IsContest" class="control-label">Submit for this month's contest</label>
+            <div class="form-check mb-3">
+                <input type="checkbox" asp-for="IsContest" id="IsContestCheckbox" onclick="checkContest()" class="form-check-input" />
+                <label asp-for="IsContest" class="form-check-label">Submit for this month's contest</label>
             </div>
 
-            <div class="form-group input-cell">
-                <label asp-for="Title" class="control-label"></label>
+            <div class="form-group mb-3">
+                <label asp-for="Title" class="form-label">Title</label>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
 
-            <div class="form-group input-cell">
-                <label asp-for="Content" class="control-label"></label>
+            <div class="form-group mb-3">
+                <label asp-for="Content" class="form-label">Content</label>
                 <textarea asp-for="Content" class="form-control"></textarea>
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Photo" class="control-label"></label>
+            <div class="form-group mb-3">
+                <label asp-for="Photo" class="form-label">Photo</label>
                 <input asp-for="Photo" type="file" class="form-control" />
                 <span asp-validation-for="Photo" class="text-danger"></span>
             </div>
 
-            <div class="form-group input-cell">
-                <label asp-for="Video" class="control-label"></label>
+            <div class="form-group mb-3">
+                <label asp-for="Video" class="form-label">Video</label>
                 <input asp-for="Video" class="form-control" />
                 <span asp-validation-for="Video" class="text-danger"></span>
             </div>
 
-            <div class="form-group input-cell">
-                <label asp-for="CategoryId" class="control-label"></label>
+            <div class="form-group mb-3">
+                <label asp-for="CategoryId" class="form-label">Category</label>
                 <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.Categories"></select>
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
 
-            <div class="form-group input-cell">
-                <label asp-for="Time" class="control-label"></label>
+            <div class="form-group mb-3">
+                <label asp-for="Time" class="form-label">Preparation Time</label>
                 <input asp-for="Time" class="form-control" />
                 <span asp-validation-for="Time" class="text-danger"></span>
             </div>
 
-            <div class="form-group input-cell">
-                <label asp-for="Difficulty" class="control-label"></label>
+            <div class="form-group mb-4">
+                <label asp-for="Difficulty" class="form-label">Difficulty (1-5)</label>
                 <input asp-for="Difficulty" class="form-control" type="number" min="1" max="5" />
                 <span asp-validation-for="Difficulty" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <input type="submit" value="Add" class="news-readmore" />
+            <div class="text-center">
+                <input type="submit" value="Add Recipe" class="btn btn-primary w-100" />
             </div>
         </form>
     </div>
 </div>
 
-
 @{
     await Html.RenderPartialAsync("_ValidationScriptsPartial");
 }
+
+<style>
+    /* Fundal */
+    .background-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('/imag/wallpaperv1.jpg');
+        background-size: cover;
+        background-position: center;
+        z-index: -1;
+    }
+
+    /* Centrare și stil pentru formular */
+    .form-container {
+        width: 100%;
+        max-width: 500px;
+        border: 1px solid #ddd;
+    }
+</style>

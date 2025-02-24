@@ -3,6 +3,28 @@
 @{
     ViewData["Title"] = "Confirm email";
 }
-
+<div class="background-container"></div>
 <h1>@ViewData["Title"]</h1>
 <partial name="_StatusMessage" model="Model.StatusMessage" />
+
+<style>
+    /* Fundal */
+    .background-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('/imag/wallpaperv1.jpg');
+        background-size: cover;
+        background-position: center;
+        z-index: -1;
+    }
+
+    /* Centrare și stil pentru formular */
+    .form-container {
+        width: 100%;
+        max-width: 500px;
+        border: 1px solid #ddd;
+    }
+</style>

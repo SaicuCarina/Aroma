@@ -47,6 +47,10 @@ namespace proj.Models
         {
             return Comments.Any(c => c.Rating.HasValue) ? Comments.Where(c => c.Rating.HasValue).Average(c => c.Rating.Value) : 0;
         }
+
+        public int NumberOfVotes {  get; set; }
+
+        public bool IsEligibleForVoting { get; set; } = false;
     }
 
 }

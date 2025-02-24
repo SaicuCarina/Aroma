@@ -1,0 +1,64 @@
+﻿@model proj.ViewModels.EditUserRolesViewModel
+
+<div class="background-container"></div>
+
+<div class="d-flex justify-content-center align-items-start min-vh-75 pt-4">
+    <div class="form-container p-4 bg-white shadow rounded">
+        <h2 class="text-center mb-4">Edit Roles for <strong>@Model.Email</strong></h2>
+
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="UserId" />
+            <input type="hidden" asp-for="Email" />
+
+            <div class="form-group mb-3">
+                <label class="form-label">Roles</label>
+                <div class="role-list">
+                    @foreach (var role in Model.Roles)
+                    {
+                        <div class="form-check mb-2">
+                            <input type="checkbox" name="SelectedRoles" value="@role.Value"
+                                   class="form-check-input" @(role.Selected ? "checked" : "") />
+                            <label class="form-check-label ms-2">@role.Text</label>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="form-check mb-3">
+                <input type="checkbox" asp-for="IsPostingRevoked" class="form-check-input" />
+                <label asp-for="IsPostingRevoked" class="form-check-label ms-2">Revoke Posting</label>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    /* Fundal */
+    .background-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('/imag/wallpaperv1.jpg');
+        background-size: cover;
+        background-position: center;
+        z-index: -1;
+    }
+
+    /* Formular */
+    .form-container {
+        width: 100%;
+        max-width: 500px;
+        border: 1px solid #ddd;
+    }
+
+    /* Aliniere pentru roluri */
+    .role-list {
+        padding-left: 10px;
+    }
+</style>

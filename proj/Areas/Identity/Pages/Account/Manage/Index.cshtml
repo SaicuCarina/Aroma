@@ -1,8 +1,9 @@
 ﻿@page
 @model proj.Areas.Identity.Pages.Account.Manage.IndexModel
+<div class="background-container"></div>
+<h2>User profile</h2>
 
-<h2>Profilul utilizatorului</h2>
-
+<!-- Display success messages, if any -->
 @if (TempData["SuccessMessage"] != null)
 {
     <div class="alert alert-success">
@@ -10,27 +11,85 @@
     </div>
 }
 
+<!-- Display registration date -->
+<p><strong>Registered on:</strong> @Model.RegistrationDate.ToString("dd MMM yyyy")</p>
+
 <p><strong>Utilizator:</strong> @Model.Username</p>
 
 <hr />
 
-
-<h3>Rețetele tale</h3>
-
-@if (Model.UserRecipes != null && Model.UserRecipes.Any())
+@if (Model.IsAdmin)
 {
-    <ul>
-        @foreach (var recipe in Model.UserRecipes)
-        {
-            <li>
-                <strong>@recipe.Title</strong> - Publicat la: @recipe.Date.ToString("dd MMM yyyy")
-                <p>@recipe.Content</p>
-                <hr />
-            </li>
-        }
-    </ul>
+    <h3>Your ads</h3>
+    @if (Model.Advertisements != null && Model.Advertisements.Any())
+    {
+        <ul>
+            @foreach (var ad in Model.Advertisements)
+            {
+                <li>
+                    <strong>@ad.Name</strong> - <a href="@ad.Link" target="_blank">Check site</a>
+                    <p><img src="~/imag/@ad.PhotoPath" alt="@ad.Name" style="max-width:200px;" /></p>
+                    <hr />
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>There are no ads.</p>
+    }
 }
 else
 {
-    <p>Nu ai publicat încă nicio rețetă.</p>
+    <h3>Your recipes</h3>
+    @if (Model.UserRecipes != null && Model.UserRecipes.Any())
+    {
+        <ul>
+            @foreach (var recipe in Model.UserRecipes)
+            {
+                <li style="display: flex; align-items: center; margin-bottom: 20px;">
+                    @if (!string.IsNullOrEmpty(recipe.PhotoPath))
+                    {
+                        <div style="flex-shrink: 0; margin-right: 20px;">
+                            <img src="~/imag/@recipe.PhotoPath" alt="Recipe Image" class="recipe-photo" style="width: 200px; height: 200px; object-fit: cover;" />
+                        </div>
+                    }
+
+                    <div>
+                        <strong>@recipe.Title</strong>
+                        <p>Posted on: @recipe.Date.ToString("dd MMM yyyy")</p>
+                        <br />
+                        <a href="@Url.Action("Details", "Recipe", new { id = recipe.Id })" class="btn btn-secondary">See content</a>
+                    </div>
+                </li>
+
+            }
+        </ul>
+    }
+    else
+    {
+        <p>You have no recipe posted.</p>
+    }
 }
+
+<style>
+    /* Fundal */
+    .background-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('/imag/wallpaperv1.jpg');
+        background-size: cover;
+        background-position: center;
+        z-index: -1;
+    }
+
+    /* Centrare și stil pentru formular */
+    .form-container {
+        width: 100%;
+        max-width: 500px;
+        border: 1px solid #ddd;
+    }
+</style>

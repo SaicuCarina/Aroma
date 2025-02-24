@@ -1,0 +1,224 @@
+﻿@{
+    ViewData["Title"] = "LuckyWheel";
+}
+
+<!DOCTYPE html>
+<html>
+
+<body>
+    <div class="background-container"></div>
+    <div id="winnerMessage"><span id="prize"></span></div>
+
+    <div class="header">
+        <h1>Try your luck!</h1>
+    </div>
+
+    <div class="wheel">
+        <canvas id="canvas" width="500" height="500"></canvas>
+        <div class="center-circle" onclick="spin()">
+            <div class="triangle"></div>
+        </div>
+    </div>
+
+    <script>
+
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        const width = canvas.width;
+        const height = canvas.height;
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const radius = width / 2;
+
+        const items = ["Lidl Discount", "Tefal Pan", "Nothing", "100 Lei Voucher", "Tefal Discount", "Bosch Discount", "Nothing", "Emag Discount"];
+        const messages = {
+            "Lidl Discount": "Congratulations! You won: 10% discount on the Lidl website with the code: Lidl10",
+            "Tefal Pan": "Congratulations! You won: voucher for the Tefal website for a pan of your choice with the code: Newpan",
+            "Nothing": "Sorry, try again tomorrow!",
+            "100 Lei Voucher": "Congratulations! You won: 100 Lei voucher to use on the Tefal website: Voucher100lucky",
+            "Tefal Discount": "Congratulations! You won: 40% discount on the Tefal website with the code: Tefal40",
+            "Bosch Discount": "Congratulations! You won: 20% discount on the Bosch website with the code: Bosch20",
+            "Emag Discount": "Congratulations! You won: 20% discount on the Emag website with the code: Emag20"
+        };
+
+        let currentDeg = 0;
+        let step = 360 / items.length;
+        let colors = [];
+        let itemDegs = {};
+
+        const userId = '@User.Identity.Name';
+
+        for (let i = 0; i < items.length; i++) {
+            colors.push(randomColor());
+        }
+
+        function randomColor() {
+            return `rgb(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`;
+        }
+
+        function toRad(deg) {
+            return deg * (Math.PI / 180);
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, width, height);
+            let startDeg = currentDeg % 360;
+            for (let i = 0; i < items.length; i++) {
+                let endDeg = startDeg + step;
+
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, toRad(startDeg), toRad(endDeg));
+                ctx.fillStyle = colors[i];
+                ctx.fill();
+
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(toRad((startDeg + endDeg) / 2));
+                ctx.textAlign = "right";
+                ctx.fillStyle = "#fff";
+                ctx.font = "bold 18px sans-serif";
+                ctx.fillText(items[i], radius - 20, 10);
+                ctx.restore();
+
+                itemDegs[items[i]] = { startDeg, endDeg };
+                startDeg += step;
+            }
+        }
+
+        function hasSpunToday(userId) {
+            const lastSpinDate = localStorage.getItem(`${userId}_lastSpinDate`);
+            const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+
+            return lastSpinDate === today;
+        }
+
+        function spin() {
+            if (hasSpunToday(userId)) {
+                showWinner("Nothing");
+                return;
+            }
+
+            const rotations = Math.floor(Math.random() * 3) + 2; // 2 to 4 full rotations
+            const partialRotation = Math.random() * step; // extra partial rotation
+            const finalRotation = (rotations * 360) + partialRotation;
+
+            let targetDeg = currentDeg + finalRotation;
+            let speed = 30;
+
+            function animate() {
+                if (speed > 0.5 || Math.abs(currentDeg - targetDeg) > 1) {
+                    currentDeg += speed;
+                    if (currentDeg > targetDeg) {
+                        currentDeg = targetDeg;
+                    }
+                    speed *= 0.98;
+                    draw();
+                    requestAnimationFrame(animate);
+                } else {
+                    const normalizedDeg = (360 - (currentDeg % 360)) % 360;
+                    const winningIndex = Math.floor(normalizedDeg / step);
+                    const selectedItem = items[winningIndex];
+                    showWinner(selectedItem);
+
+                    // Save today's date for the current user after spinning
+                    const today = new Date().toISOString().split('T')[0]; // Get today's date
+                    localStorage.setItem(`${userId}_lastSpinDate`, today);
+                }
+            }
+
+            animate();
+        }
+
+        function showWinner(prize) {
+            const winnerMessage = document.getElementById("winnerMessage");
+            document.getElementById("prize").textContent = messages[prize] || prize;
+            winnerMessage.classList.add("visible");
+        }
+
+        draw();
+    </script>
+</body>
+<head>
+    <style>
+        /* Stilul pentru div-ul de fundal */
+        .background-container {
+            position: fixed; /* Poziționează imaginea relativ la fereastra browser-ului */
+            top: 0;
+            left: 0;
+            width: 100%; /* Întinde div-ul pe toată lățimea paginii */
+            height: 100%; /* Întinde div-ul pe toată înălțimea paginii */
+            background-image: url('/imag/wallpaperv1.jpg'); /* Calea către imaginea ta */
+            background-size: cover; /* Face ca imaginea să ocupe întreaga zonă */
+            background-position: center; /* Centrează imaginea */
+            z-index: -1; /* Pune div-ul în spatele altor elemente */
+        }
+
+        /* Conținutul paginii tale */
+        .content {
+            position: relative; /* Asigură-te că elementele conținutului sunt deasupra div-ului de fundal */
+            z-index: 1; /* Păstrează conținutul deasupra imaginii */
+            color: white; /* Opțional: Schimbă culoarea textului pentru a fi vizibil pe fundal */
+            padding: 20px;
+        }
+        .header {
+            padding: 40px;
+            color: black;
+            margin: 0 auto;
+            margin-bottom: 40px;
+        }
+
+            .header h1, p {
+                text-align: center;
+            }
+
+        .wheel {
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+
+        .center-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 60px;
+            background-color: #fff;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+
+        .triangle {
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-right: 30px solid white;
+            position: absolute;
+            top: 50%;
+            right: -220%;
+            transform: translateY(-50%);
+        }
+
+        #winnerMessage {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 24px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+            #winnerMessage.visible {
+                display: block;
+            }
+    </style>
+</head>
+</html>

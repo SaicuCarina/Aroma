@@ -4,125 +4,165 @@
     ViewData["Title"] = "Recipe Details";
 }
 
-<div class="recipe-details" style="display: flex; align-items: center; justify-content: center; gap: 50px;">
-    <div class="recipe-info">
-        <h2>@Model.Title</h2>
-        <div class="recipe-meta">
-            <small>Posted by @Model.UserName on @Model.Date.ToString("dd MMM yyyy")</small><br>
-            <small>Category: @Model.Category.CategoryName</small><br>
-            <small>Difficulty: @Model.Difficulty</small><br>
-            <small>Time to make: @Model.Time</small>
-        </div>
+<div class="background-container"></div>
+<div style="background-color: white; padding: 10px; border: 1px solid #ddd; position: relative; z-index: 1;">
+    <div class="recipe-details" style="display: flex; align-items: center; justify-content: center; gap: 50px;">
+        <div class="recipe-info">
+            <h2>@Model.Title</h2>
+            <div class="recipe-meta">
+                <small>Posted by @Model.UserName.Split('@')[0] on @Model.Date.ToString("dd MMM yyyy")</small><br>
+                <small>Category: @Model.Category.CategoryName</small><br>
+                <small>Difficulty: @Model.Difficulty</small><br>
+                <small>Time to make: @Model.Time</small>
+            </div>
 
-        <div>
-            <h3>Average Rating: @ViewBag.AverageRating.ToString("F1")</h3>
-            <div class="rating-stars">
-                @for (int i = 1; i <= 5; i++)
-                {
-                    int fullParts = (int)ViewBag.AverageRating;
-                    double fractionalPart = ViewBag.AverageRating - fullParts;
+            <!-- Separate section for Average Rating at the top -->
+            <div>
+                <h3>Average Rating: @ViewBag.AverageRating.ToString("F1")</h3>
+                <div class="rating-stars">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        int fullParts = (int)ViewBag.AverageRating;
+                        double fractionalPart = ViewBag.AverageRating - fullParts;
 
-                    if (i <= fullParts)
-                    {
-                        <span class="star filled">&#9733;</span>
+                        if (i <= fullParts)
+                        {
+                            <span class="star filled">&#9733;</span>
+                        }
+                        else if (i == fullParts + 1 && fractionalPart >= 0.5)
+                        {
+                            <span class="star half-filled">&#9733;</span>
+                        }
+                        else if (i == fullParts + 1 && fractionalPart > 0.1)
+                        {
+                            <span class="star half-filled">&#9733;</span>
+                        }
+                        else
+                        {
+                            <span class="star empty">&#9734;</span>
+                        }
                     }
-                    else if (i == fullParts + 1 && fractionalPart >= 0.5)
+                </div>
+            </div>
+
+            <div>
+                <form asp-controller="Recipe" asp-action="Vote" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden" name="vote" value="1" />
+                    <button class="btn btn-primary" style="width: auto; padding: 8px 15px; border-radius: 5px; display: block; margin-top: 10px;" type="submit">Vote Recipe</button>
+                </form>
+            </div>
+
+
+            <div>
+                <form asp-action="ToggleFavourite" method="post">
+                    <input type="hidden" name="recipeId" value="@Model.Id" />
+                    @if ((bool)ViewBag.IsFavorite)
                     {
-                        <span class="star half-filled">&#9733;</span>
-                    }
-                    else if (i == fullParts + 1 && fractionalPart > 0.1)
-                    {
-                        <span class="star half-filled">&#9733;</span>
+                        <button type="submit" class="btn btn-danger">Remove from Favourites</button>
                     }
                     else
                     {
-                        <span class="star empty">&#9734;</span>
+                        <button type="submit" class="btn btn-secondary" style="width: auto; padding: 8px 15px; border-radius: 5px; display: block; margin-top: 10px;">Mark as Favourite <i class="bi bi-heart"></i></button>
                     }
-                }
+                </form>
             </div>
         </div>
+        @if (Model.PhotoPath != null)
+        {
+            <div class="recipe-photo">
+                <img src="~/imag/@Model.PhotoPath" alt="Recipe Photo" class="img-fluid" style="object-fit: cover; width: 350px; height: 350px;" />
+            </div>
+        }
     </div>
-
-    @if (Model.PhotoPath != null)
-    {
-        <div class="recipe-photo">
-            <img src="~/imag/@Model.PhotoPath" alt="Recipe Photo" class="img-fluid" style="width: 350px; height: 350px;" />
-        </div>
-    }
 </div>
 
-
-
-    <div class="recipe-content">
-        <h3>Recipe Content</h3>
-        <div style="white-space: pre; word-wrap: break-word;">
-            @Model.Content
-        </div>
+<!-- Separate section for Recipe Content including Video -->
+<div style="background-color: white; padding: 10px; border: 1px solid #ddd; margin-top: 20px; position: relative; z-index: 1;">
+    <div style="white-space: pre; word-wrap: break-word;">
+        @Model.Content
     </div>
-
-    <br/>
-
     @if (Model.VideoPath != null)
     {
-        <div class="recipe-video">
-            <video controls="controls">
-                <source src="~/imag/@Model.VideoPath" type="video/mp4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen />
+        <div class="recipe-video" style="margin-top: 20px;">
+            <video controls="controls" style="width: 100%; max-width: 400px;">
+                <source src="~/imag/@Model.VideoPath" type="video/mp4" />
             </video>
         </div>
     }
-
-    <div>
-        <h3>Leave a Comment or Rating</h3>
-        <form asp-action="Details" method="post">
-            <input type="hidden" name="id" value="@Model.Id" />
-            <div class="form-group">
-                <label for="commentContent">Comment</label>
-                <textarea id="commentContent" name="commentContent" class="form-control"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="rating">Rating</label>
-                <select id="rating" name="rating" class="form-control">
-                    <option value="">-- Select a rating --</option>
-                    @for (int i = 1; i <= 5; i++)
-                    {
-                        <option value="@i">@i star@(i > 1 ? "s" : "")</option>
-                    }
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-    </div>
-
-    <div>
-        <h3>Comments</h3>
-        @if (Model.Comments.Any())
-        {
-            foreach (var comment in Model.Comments.OrderByDescending(c => c.Date))
-            {
-                // Retrieve the rating for this user and recipe (if any)
-                var userRating = Model.Ratings.FirstOrDefault(r => r.UserName == comment.UserName);
-
-                <div>
-                    <strong>@comment.UserName</strong>
-                    @if (userRating != null)
-                    {
-                        <span> - Rating: @userRating.StarNumber/5</span>
-                    }
-                    <span> (@comment.Date.ToShortDateString()):</span>
-                    <p>@comment.Content</p>
-                </div>
-            }
-        }
-        else
-        {
-            <p>No comments yet. Be the first to leave one!</p>
-        }
-    </div>
-
 </div>
 
+<!-- Separate section for comments and rating -->
+<div style="background-color: white; padding: 15px; border: 1px solid #ddd; margin-top: 20px; position: relative; z-index: 1; border-radius: 8px;">
+    <h3>Leave a Comment or Rating</h3>
+    <form asp-action="Details" method="post">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <div class="form-group">
+            <label for="commentContent">Comment</label>
+            <textarea id="commentContent" name="commentContent" class="form-control" style="margin-bottom: 10px; border-radius: 5px;"></textarea>
+        </div>
+        <div class="form-group" style="margin-bottom: 15px;">
+            <label for="rating">Rating</label>
+            <select id="rating" name="rating" class="form-control" style="border-radius: 5px;">
+                <option value="">-- Select a rating --</option>
+                @for (int i = 1; i <= 5; i++)
+                {
+                    <option value="@i">@i star@(i > 1 ? "s" : "")</option>
+                }
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: auto; padding: 8px 15px; border-radius: 5px; display: block; margin-top: 10px;">Submit</button>
+    </form>
+</div>
+
+<!-- Separate section for user comments -->
+<div style="background-color: white; padding: 10px; border: 1px solid #ddd; margin-top: 20px; position: relative; z-index: 1;">
+    <h3>Comments</h3>
+    @if (Model.Comments.Any())
+    {
+        foreach (var comment in Model.Comments.OrderByDescending(c => c.Date))
+        {
+            var userRating = Model.Ratings.FirstOrDefault(r => r.UserName == comment.UserName);
+            <div>
+                <strong>@comment.UserName.Split('@')[0]</strong>
+                <span> (@comment.Date.ToShortDateString()):</span>
+                <div class="rating-stars" style="display: inline-block;">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        if (userRating != null && i <= userRating.StarNumber)
+                        {
+                            <span class="star filled" style="color: gold; font-size: 20px;">&#9733;</span>
+                        }
+                        else
+                        {
+                            <span class="star empty" style="color: lightgray; font-size: 20px;">&#9734;</span>
+                        }
+                    }
+                </div>
+                <p>@comment.Content</p>
+            </div>
+        }
+    }
+    else
+    {
+        <p>No comments yet. Be the first to leave one!</p>
+    }
+</div>
 
 <style>
+    .background-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('/imag/wallpaperv1.jpg');
+        background-size: cover;
+        background-position: center;
+        z-index: -1;
+    }
+
     .star {
         font-size: 24px;
         margin-right: 5px;
@@ -142,4 +182,5 @@
     .empty {
         color: #ccc;
     }
+
 </style>

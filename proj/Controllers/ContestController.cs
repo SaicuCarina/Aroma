@@ -28,7 +28,7 @@ namespace proj.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ContestModel contest)
-        {
+{
             try
             {
                 if (contest.Photo == null || string.IsNullOrEmpty(contest.Photo.FileName))
@@ -41,7 +41,7 @@ namespace proj.Controllers
 
                     contest.PhotoPath = picture.FileName;
 
-                    var basePath = "C:\\Users\\Corina\\source\\repos\\Aroma\\proj\\wwwroot\\imag\\"; //de schimbat fiecare
+                    var basePath = "C:\\Users\\Corina\\source\\repos\\AromaAfterEma\\AromaCurrent\\AromaCurrent\\Aroma\\proj\\wwwroot\\imag\\"; //de schimbat fiecare
                     var fullPathPhoto = Path.Combine(basePath, contest.PhotoPath);
                     var fileStreamPhoto = new FileStream(fullPathPhoto, FileMode.Create, FileAccess.Write);
 

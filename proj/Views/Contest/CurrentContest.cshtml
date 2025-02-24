@@ -1,5 +1,8 @@
 ﻿@model proj.Models.ContestModel
 
+<div class="background-container"></div>
+<div style="background-color: white;padding: 10px;
+        border: 1px solid #ddd;">
 <h2>Current Contest</h2>
 
 @if (TempData["ErrorMessage"] != null)
@@ -40,12 +43,13 @@
                 <div class="col-md-4">
                     <div class="recipe-card">
                         <h4>@recipe.Title</h4>
-                        <small>Submitted by @recipe.UserName on @recipe.Date.ToString("dd MMM yyyy")</small>
+                        <small>Submitted by @recipe.UserName.Split('@')[0] on @recipe.Date.ToString("dd MMM yyyy")</small>
                         @if (!string.IsNullOrEmpty(recipe.PhotoPath))
                         {
                             <img src="~/imag/@recipe.PhotoPath" alt="Recipe Image" class="recipe-photo" />
                         }
-                        <a href="@Url.Action("Details", "Recipe", new { id = recipe.Id })" class="news-readmore">Read more</a>
+                        <small>Votes: @recipe.NumberOfVotes</small>
+                        <a href="@Url.Action("Details", "Recipe", new { id = recipe.Id })" class="btn btn-secondary">See content</a>
                     </div>
                 </div>
 
@@ -65,8 +69,30 @@ else
 {
     <p>No contest for the current month.</p>
 }
+</div>
 
 <style>
+    /* Stilul pentru div-ul de fundal */
+    .background-container {
+        position: fixed; /* Poziționează imaginea relativ la fereastra browser-ului */
+        top: 0;
+        left: 0;
+        width: 100%; /* Întinde div-ul pe toată lățimea paginii */
+        height: 100%; /* Întinde div-ul pe toată înălțimea paginii */
+        background-image: url('/imag/wallpaperv1.jpg'); /* Calea către imaginea ta */
+        background-size: cover; /* Face ca imaginea să ocupe întreaga zonă */
+        background-position: center; /* Centrează imaginea */
+        z-index: -1; /* Pune div-ul în spatele altor elemente */
+    }
+
+    /* Conținutul paginii tale */
+    .content {
+        position: relative; /* Asigură-te că elementele conținutului sunt deasupra div-ului de fundal */
+        z-index: 1; /* Păstrează conținutul deasupra imaginii */
+        color: white; /* Opțional: Schimbă culoarea textului pentru a fi vizibil pe fundal */
+        padding: 20px;
+    }
+
     .contest-details {
         background-color: #f9f9f9;
         border: 1px solid #ddd;
@@ -170,3 +196,4 @@ else
 
 
 </style>
+

@@ -40,14 +40,14 @@ namespace proj.Controllers
                 // Verifică dacă fișierul foto este furnizat
                 if (advertisement.Photo == null || string.IsNullOrEmpty(advertisement.Photo.FileName))
                 {
-                    advertisement.PhotoPath = "default.jpg"; // Imagine implicită dacă nu este încărcată nicio poză
+                    advertisement.PhotoPath = "boschad1.jpg"; // Imagine implicită dacă nu este încărcată nicio poză
                 }
                 else
                 {
                     advertisement.PhotoPath = advertisement.Photo.FileName;
 
                     // Calea către directorul de upload
-                    var basePath = "C:\\Users\\Corina\\source\\repos\\Aroma\\proj\\wwwroot\\imag\\"; // Modifică după caz
+                    var basePath = "C:\\Users\\Corina\\source\\repos\\AromaAfterEma\\AromaCurrent\\AromaCurrent\\Aroma\\proj\\wwwroot\\imag\\"; // Modifică după caz
                     var fullPath = Path.Combine(basePath, advertisement.PhotoPath);
 
                     // Salvează fișierul în sistemul local

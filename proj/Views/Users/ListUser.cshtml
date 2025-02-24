@@ -1,0 +1,82 @@
+﻿@model IEnumerable<proj.ViewModels.UserRolesViewModel>
+
+@{
+    ViewData["Title"] = "Users";
+}
+
+<div class="background-container"></div>
+
+<div class="d-flex justify-content-center align-items-start min-vh-75 pt-4">
+    <div class="table-container bg-white p-4 shadow rounded">
+        <h2 class="text-center mb-4">Users</h2>
+
+        <table class="table table-striped table-hover">
+            <thead class="table-grey text-center">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.First().User.Email)</th>
+                    <th>Roles</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="align-middle text-center">@Html.DisplayFor(modelItem => item.User.Email)</td>
+                        <td class="align-middle text-center">
+                            @foreach (var role in item.Roles)
+                            {
+                                <span class="badge bg-secondary">@role</span>
+
+                                <br />
+                            }
+                        </td>
+                        <td class="align-middle text-center">
+                            <a asp-action="Edit" asp-route-id="@item.User.Id" class="btn btn-primary btn-sm">Edit</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    /* Fundal */
+    .background-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('/imag/wallpaperv1.jpg');
+        background-size: cover;
+        background-position: center;
+        z-index: -1;
+    }
+
+    /* Container tabel */
+    .table-container {
+        width: 100%;
+        max-width: 800px;
+        border: 1px solid #ddd;
+    }
+
+    /* Optimizare tabel */
+    .table th, .table td {
+        vertical-align: middle;
+    }
+
+    .badge {
+        display: inline-block;
+        margin: 2px 0;
+        padding: 5px 10px;
+        font-size: 0.85rem;
+        border-radius: 8px;
+    }
+
+    .btn-sm {
+        padding: 5px 10px;
+        font-size: 0.85rem;
+    }
+</style>

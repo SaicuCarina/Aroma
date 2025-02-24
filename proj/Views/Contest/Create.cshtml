@@ -1,33 +1,65 @@
 ﻿@model proj.Models.ContestModel
 
-<h2>Add Contest</h2>
+<div class="background-container"></div>
 
-<form asp-action="Create" method="post">
-    <div class="form-group">
-        <label asp-for="Month"></label>
-        <input asp-for="Month" class="form-control" />
-        <span asp-validation-for="Month" class="text-danger"></span>
+<div class="d-flex justify-content-center align-items-start min-vh-75 pt-4">
+    <div class="form-container p-4 bg-white shadow rounded">
+        <h2 class="text-center mb-3">Add Contest</h2>
+
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <div class="form-group mb-3">
+                <label asp-for="Month" class="form-label">Month</label>
+                <input asp-for="Month" class="form-control" />
+                <span asp-validation-for="Month" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Year" class="form-label">Year</label>
+                <input asp-for="Year" class="form-control" />
+                <span asp-validation-for="Year" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Theme" class="form-label">Theme</label>
+                <input asp-for="Theme" class="form-control" />
+                <span asp-validation-for="Theme" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-4">
+                <label asp-for="Photo" class="form-label">Photo</label>
+                <input asp-for="Photo" type="file" class="form-control" />
+                <span asp-validation-for="Photo" class="text-danger"></span>
+            </div>
+
+            <div class="text-center">
+                <input type="submit" value="Add" class="btn btn-primary w-100" />
+            </div>
+        </form>
     </div>
-    <div class="form-group">
-        <label asp-for="Year"></label>
-        <input asp-for="Year" class="form-control" />
-        <span asp-validation-for="Year" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Theme"></label>
-        <input asp-for="Theme" class="form-control" />
-        <span asp-validation-for="Theme" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Photo" class="control-label"></label>
-        <input asp-for="Photo" type="file" class="form-control" />
-        <span asp-validation-for="Photo" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <input type="submit" value="Add" class="addbtn" />
-    </div>
-</form>
+</div>
 
 @{
     await Html.RenderPartialAsync("_ValidationScriptsPartial");
 }
+
+<style>
+    /* Fundal */
+    .background-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('/imag/wallpaperv1.jpg');
+        background-size: cover;
+        background-position: center;
+        z-index: -1;
+    }
+
+    /* Centrare și stil pentru formular */
+    .form-container {
+        width: 100%;
+        max-width: 500px;
+        border: 1px solid #ddd;
+    }
+</style>

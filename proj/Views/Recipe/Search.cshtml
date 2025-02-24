@@ -1,0 +1,86 @@
+﻿@model IEnumerable<proj.Models.RecipeModel>
+@{
+    ViewData["Title"] = "Search Results";
+}
+<div class="background-container"></div>
+<main class="recipes-list">
+    <h2>Search Results</h2>
+    @if (!Model.Any())
+    {
+        <p>No recipes available.</p>
+    }
+    else
+    {
+        <ul class="recipe-grid">
+            @foreach (var recipe in Model)
+            {
+                <li class="recipe-item">
+                    <h3>@recipe.Title</h3>
+                    <small>Posted by @recipe.UserName.Split('@')[0] on @recipe.Date.ToString("dd MMM yyyy")</small>
+                    <p>@recipe.Category</p>
+                    @if (!string.IsNullOrEmpty(recipe.PhotoPath))
+                    {
+                        <img src="~/imag/@recipe.PhotoPath" alt="Recipe Image" class="recipe-photo" />
+                    }
+                    <a href="@Url.Action("Details", "Recipe", new { id = recipe.Id })" class="btn btn-secondary">See content</a>
+
+                </li>
+            }
+        </ul>
+    }
+</main>
+
+<style>
+    .recipes-list {
+        background-color: #fff;
+        padding: 10px;
+        border: 1px solid #ddd;
+    }
+
+    .recipe-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* 3 coloane */
+        gap: 20px;
+        list-style: none;
+        padding: 0;
+    }
+
+    .recipe-item {
+        background-color: #f9f9f9;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        text-align: center;
+    }
+
+    .recipe-photo {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 5px;
+        margin: 10px auto;
+        display: block;
+    }
+</style>
+<style>
+    /* Stilul pentru div-ul de fundal */
+    .background-container {
+        position: fixed; /* Poziționează imaginea relativ la fereastra browser-ului */
+        top: 0;
+        left: 0;
+        width: 100%; /* Întinde div-ul pe toată lățimea paginii */
+        height: 100%; /* Întinde div-ul pe toată înălțimea paginii */
+        background-image: url('/imag/wallpaperv1.jpg'); /* Calea către imaginea ta */
+        background-size: cover; /* Face ca imaginea să ocupe întreaga zonă */
+        background-position: center; /* Centrează imaginea */
+        z-index: -1; /* Pune div-ul în spatele altor elemente */
+    }
+
+    /* Conținutul paginii tale */
+    .content {
+        position: relative; /* Asigură-te că elementele conținutului sunt deasupra div-ului de fundal */
+        z-index: 1; /* Păstrează conținutul deasupra imaginii */
+        color: white; /* Opțional: Schimbă culoarea textului pentru a fi vizibil pe fundal */
+        padding: 20px;
+    }
+</style>
